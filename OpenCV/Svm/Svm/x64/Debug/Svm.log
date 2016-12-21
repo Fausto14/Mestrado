@@ -1,0 +1,18 @@
+﻿  Source.cpp
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(38): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(112): warning C4101: 'num': unreferenced local variable
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(128): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(194): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(216): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(268): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(280): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(281): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(293): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(301): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(302): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(303): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(304): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\fadell\documents\visual studio 2015\projects\svm\svm\source.cpp(259): warning C4101: 'selecione': unreferenced local variable
+  Svm.vcxproj -> C:\Users\fadell\documents\visual studio 2015\Projects\Svm\x64\Debug\Svm.exe
+  Svm.vcxproj -> C:\Users\fadell\documents\visual studio 2015\Projects\Svm\x64\Debug\Svm.pdb (Partial PDB)

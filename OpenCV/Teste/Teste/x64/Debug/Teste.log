@@ -1,0 +1,4 @@
+﻿  Source.cpp
+c:\users\fadell\google drive\mestrado\opencv\teste\teste\haralick.h(174): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Teste.vcxproj -> C:\Users\fadell\Google Drive\Mestrado\OpenCV\Teste\x64\Debug\Teste.exe
+  Teste.vcxproj -> C:\Users\fadell\Google Drive\Mestrado\OpenCV\Teste\x64\Debug\Teste.pdb (Full PDB)
