@@ -1,0 +1,18 @@
+﻿  VisualGDB: Run "cmd.exe /c "C:\SysGCC\mingw64\bin\mingw32-make.exe" CONFIG=Debug clean" in directory "C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste" on local computer
+  cmd /C del /S /Q Debug
+  C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste\Debug\CouroTeste.log
+  O arquivo j  est  sendo usado por outro processo.
+  VisualGDB: Run "cmd.exe /c "C:\SysGCC\mingw64\bin\mingw32-make.exe" CONFIG=Debug" in directory "C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste" on local computer
+  C:/SysGCC/mingw64/bin/g++.exe -ggdb -ffunction-sections -O0   -DDEBUG=1  -c main.cpp -o Debug/main.o -MD -MF Debug/main.dep
+  C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste\main.cpp(13):
+C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste\MLPedrosa.h(20,64): error : opencv2/opencv.hpp: No such file or directory
+  compilation terminated.
+  mingw32-make: *** [Debug/main.o] Error 1
+  -------------------------------------------------------------
+  Command exited with code 2
+  Executable: cmd.exe
+  Arguments: /c "C:\SysGCC\mingw64\bin\mingw32-make.exe" CONFIG=Debug
+  Directory: C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste
+VisualGDB : error : Command-line action failed
+EXEC : error : Build has failed. See the Output window for more details.
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.MakeFile.Targets(46,5): error MSB3073: The command ""C:\Program Files (x86)\Sysprogs\VisualGDB\\VisualGDB.exe" /rebuild "C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste\CouroTeste.vcxproj" "/solution:C:\Users\fadell\Documents\Mestrado\OpenCV\CouroTeste\CouroTeste.sln" "/config:Debug" "/platform:Win32"" exited with code 1.

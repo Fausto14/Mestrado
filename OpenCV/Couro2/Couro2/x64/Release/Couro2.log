@@ -1,0 +1,12 @@
+﻿  main.cpp
+..\..\..\..\..\Google Drive\Mestrado - Fausto\Trabalho\Framework_Extraction\Framework_Extraction\main.cpp(63): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+..\..\..\..\..\Google Drive\Mestrado - Fausto\Trabalho\Framework_Extraction\Framework_Extraction\main.cpp(82): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+..\..\..\..\..\Google Drive\Mestrado - Fausto\Trabalho\Framework_Extraction\Framework_Extraction\main.cpp(83): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+..\..\..\..\..\Google Drive\Mestrado - Fausto\Trabalho\Framework_Extraction\Framework_Extraction\main.cpp(111): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  Generating code
+  10 of 715 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Couro2.vcxproj -> C:\Users\fadell\Documents\Mestrado\OpenCV\Couro2\x64\Release\CouroExtraction.exe
+  Couro2.vcxproj -> C:\Users\fadell\Documents\Mestrado\OpenCV\Couro2\x64\Release\CouroExtraction.pdb (Full PDB)
