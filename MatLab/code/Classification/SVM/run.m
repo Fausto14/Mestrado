@@ -8,6 +8,7 @@ ptrn = 0.74;
 numRodadas = 50;
 numFolds = 5;
 qtdClasses = 7;
+maiores = 5;
 
 % paraC = ceil(0.1 * ptrn * size(dados.y, 1))+80;
 conf.paraC = 8;
@@ -27,12 +28,12 @@ accGeral = zeros(qtdClasses,1);
 %%
 vIni = 1;
 vInc = 1;
-vFin = 10;
+vFin = 100;
 resolucoes = (vIni:vInc:vFin);
 
 %% intervalo da resolução que deseja plotar no gráfico
 resoIni = 1;
-resoFim = 10;
+resoFim = 100;
 
 somaEscoresAcertosClasse = zeros(qtdClasses,1);
 somaEscoresErrosClasse = zeros(qtdClasses,1);
@@ -143,14 +144,13 @@ for reso = resolucoes
             acc = matrizesConf{i}(k,k)/sum(matrizesConf{i}(k,:));
             accGeral(k) = accGeral(k) + acc;
             vetorAccClasse(k,i) = acc;
-            vetorAccClasseRodReso{k}(i,pos) = acc;
+            %vetorAccClasseRodReso{k}(i,pos) = acc;
             matrixAccClasseRodReso(k,i,pos) = acc;
-            vetorAccResoRodClasse{pos}(i,k) = acc;
+            %vetorAccResoRodClasse{pos}(i,k) = acc;
             fprintf(fileID,'%3d %12.3f \r\n',k,acc);
         end
         fprintf(fileID,'\n');
     end
-
     fprintf('FIM DE TODO O PROCESSO...\n');
 
     %mediaAcc = mean(acuracia);
@@ -270,10 +270,10 @@ for k = 1 : qtdClasses
     
     gcf = figure('visible','off');
     
-    boxplot(vetorAccClasseRodReso{k}(:,resoIni:resoFim));
+    boxplot(squeeze(matrixAccClasseRodReso(k,:,resoIni:resoFim)));
     % Overlay the mean as green circle
     hold on
-    plot(mean(vetorAccClasseRodReso{k}(:,resoIni:resoFim)), 'og');
+    plot(mean(squeeze(matrixAccClasseRodReso(k,:,resoIni:resoFim))), 'og');
     hold off
     strTitle = sprintf('Acurácia da Classe %d por Resolução - %d rodadas',k,numRodadas);
     title(strTitle);
@@ -290,10 +290,10 @@ for k = 1 : resoFim
     
     gcf = figure('visible','off');
     
-    boxplot(vetorAccResoRodClasse{k});
+    boxplot(matrixAccClasseRodReso(:,:,k)');
     % Overlay the mean as green circle
     hold on
-    plot(mean(vetorAccResoRodClasse{k}), 'og');
+    plot(mean(matrixAccClasseRodReso(:,:,k)'), 'og');
     hold off
     strTitle = sprintf('Acurácia por Classe na resolução de %d%% - %d rodadas',k,numRodadas);
     title(strTitle);
@@ -372,11 +372,30 @@ y1 = 100*mean(vetorAccClasseReso(:,resoIni:resoFim)); %acurácia do classificador
 y2 = mean(c); %média do escores de acertos em todas as rodadas do classificador
 y3 = mean(c2); %média do escores de acertos em todas as rodadas do classificador
 
+%pegando as 5 maiores acurácia baseado na classe 1
+mediaAccClasses = squeeze(mean(matrixAccClasseRodReso(:,:,resoIni:resoFim)));%pega a média das acuracias das clases
+mediaAccClassesOrder = sortrows(mediaAccClasses,-1*[resoIni:resoFim]);%ordena na forma decrescente da esquerda para a direita
+y4 = 100*mean(mediaAccClassesOrder(1:maiores,:));% pegar as n maiores maiores acurácias do classificador
+
+%pegando os 5 maiores acertos baseado na classe 1
+mediaAcertosOrder = sortrows(c,-1*[resoIni:resoFim]);%ordena na forma decrescente da esquerda para a direita
+y5 = mean(mediaAcertosOrder(1:maiores,:));% pegar os n maiores acertos do classificador
+
+%pegando os 5 maiores erros baseado na classe 1
+mediaErrosOrder = sortrows(c2,-1*[resoIni:resoFim]);%ordena na forma decrescente da esquerda para a direita
+y6 = mean(mediaErrosOrder(1:maiores,:));% pegar os n maiores acertos do classificador
+
 plot(x,y1,'b','LineWidth',2,'DisplayName','Acurácia');
 hold on
 plot(x,y2,'g','LineWidth',2,'DisplayName','Acertos');
 hold on
 plot(x,y3,'r','LineWidth',2,'DisplayName','Erros');
+hold on
+plot(x,y4,'k','LineWidth',2,'DisplayName','Acurácia+');
+hold on
+plot(x,y5,'c','LineWidth',2,'DisplayName','Acertos+');
+hold on
+plot(x,y6,'m','LineWidth',2,'DisplayName','Erros+');
 
 legend('show','Location','northwest','Orientation','horizontal');
 hold off
@@ -391,17 +410,17 @@ saveas(gcf,nameFileGraph);
 
 
 %ESCREVENDO NO ARQUIVO O RESULTADO (ACUÁRIA E DESVIO PADRÃO) GERAL DAS CLASSES EM CADA RESOLUÇÃO
-fprintf(fileID2,'\nEXIBINDO OS 5 MELHORES CLASSIFICADORES COM BASE NO TOTAL DE ESCORES DE ACERTOS');
-fprintf(fileID2,'\n%2s %10s %10s %10s %10s\r\n','ESCORES','ERROS','ACURÁCIA','RODADA','RESOLUÇÃO');
-%[sortC, sortIndices] = sort(c,2,'descend');%ordena a matrix linhas
-maxValue = max(c(:));
-[rowsOfMaxes, colsOfMaxes] = find(c <= maxValue,5);
-for rowMax = rowsOfMaxes'
-    for colMax = colsOfMaxes'
-        fprintf(fileID2,'%3d %12d %12.1f%% %12d %12d\r\n',c(rowMax,colMax),c2(rowMax,colMax),100*mean(matrixAccClasseRodReso(:,rowMax,colMax)),rowMax,colMax);
-    end
-    break;
-end
+% fprintf(fileID2,'\nEXIBINDO OS 5 maiores CLASSIFICADORES COM BASE NO TOTAL DE ESCORES DE ACERTOS');
+% fprintf(fileID2,'\n%2s %10s %10s %10s %10s\r\n','ESCORES','ERROS','ACURÁCIA','RODADA','RESOLUÇÃO');
+% %[sortC, sortIndices] = sort(c,2,'descend');%ordena a matrix linhas
+% maxValue = max(c(:));
+% [rowsOfMaxes, colsOfMaxes] = find(c <= maxValue,5);
+% for rowMax = rowsOfMaxes'
+%     for colMax = colsOfMaxes'
+%         fprintf(fileID2,'%3d %12d %12.1f%% %12d %12d\r\n',c(rowMax,colMax),c2(rowMax,colMax),100*mean(matrixAccClasseRodReso(:,rowMax,colMax)),rowMax,colMax);
+%     end
+%     break;
+% end
 
 %fechando os arquivos
 fclose(fileID);
