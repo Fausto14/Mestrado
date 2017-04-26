@@ -8,7 +8,7 @@ ptrn = 0.74;
 numRodadas = 50;
 numFolds = 5;
 qtdClasses = 7;
-maiores = 5;
+melhores = 5;
 
 % paraC = ceil(0.1 * ptrn * size(dados.y, 1))+80;
 conf.paraC = 8;
@@ -16,7 +16,7 @@ conf.sigma = 2;
 
 conf.fkernel = 'rbf';
 conf.metodo = 'SMO';
-conf.options.MaxIter = 15000;
+conf.options.MaxIter = 150000;
 
 %%ABRIR ARQUIVO
 nameFile = sprintf('results/resultsSVM_train%d_SIGMA%.2f_R%d_%s.txt',ptrn*100,conf.sigma,numRodadas,conf.fkernel);
@@ -38,17 +38,29 @@ resoFim = 100;
 somaEscoresAcertosClasse = zeros(qtdClasses,1);
 somaEscoresErrosClasse = zeros(qtdClasses,1);
 
+matrixConfusion = zeros(qtdClasses);
+
 %matriz dos valores de erros
-matrizErrosClasse(1,:) = [0 1 2 3 4 5 6];
-matrizErrosClasse(2,:) = [1 0 1 2 3 4 5];
-matrizErrosClasse(3,:) = [2 1 0 1 2 3 4];
-matrizErrosClasse(4,:) = [3 2 1 0 1 2 3];
-matrizErrosClasse(5,:) = [4 3 2 1 0 1 2];
-matrizErrosClasse(6,:) = [5 4 3 2 1 0 1];
-matrizErrosClasse(7,:) = [6 5 4 3 2 1 0];
+% matrizErrosClasse(1,:) = [0 1 2 3 4 5 6];
+% matrizErrosClasse(2,:) = [1 0 1 2 3 4 5];
+% matrizErrosClasse(3,:) = [2 1 0 1 2 3 4];
+% matrizErrosClasse(4,:) = [3 2 1 0 1 2 3];
+% matrizErrosClasse(5,:) = [4 3 2 1 0 1 2];
+% matrizErrosClasse(6,:) = [5 4 3 2 1 0 1];
+% matrizErrosClasse(7,:) = [6 5 4 3 2 1 0];
+
+matrizErrosClasse(1,:) = [0 15 25 45 60 80 85];
+matrizErrosClasse(2,:) = [15 0 15 25 45 60 80];
+matrizErrosClasse(3,:) = [25 15 0 15 25 45 60];
+matrizErrosClasse(4,:) = [45 25 15 0 15 25 45];
+matrizErrosClasse(5,:) = [60 45 25 15 0 15 25];
+matrizErrosClasse(6,:) = [80 60 45 25 15 0 15];
+matrizErrosClasse(7,:) = [85 80 60 45 25 15 0];
+
+frac = 10;
 
 %vetor dos escores por acertos das classes
-vetorEscoresClasses = [7 6 5 4 3 2 1];
+vetorEscoresClasses = [100 85 75 55 40 20 15];
 %vetorPesosClasses   = [10 9 8 7 6 5 4 3];
 
 %total máximo de escores de acertos do classificador
@@ -99,6 +111,7 @@ for reso = resolucoes
 
         % Matriz de confusao e acurácia
         matrizesConf{i} = confusionmat(dadosTeste.y', Y');
+        matrixConfusion = matrixConfusion + matrizesConf{i};
         %acuracia(i) = trace(matrizesConf{i}) / length(Y);
         
         %%CÁCULO DOS PREÇO|ESCORES DO COURO POR REALIZAÇÃO(RODADA
@@ -106,9 +119,9 @@ for reso = resolucoes
         for lin = 1 : qtdClasses
             for col = 1 : qtdClasses
                 if lin == col  %acertos - diagonal principal
-                    somaEscoresAcertosClasse(lin) = somaEscoresAcertosClasse(lin) + (vetorEscoresClasses(lin) * matrizesConf{i}(lin,col));
+                    somaEscoresAcertosClasse(lin) = somaEscoresAcertosClasse(lin) + (vetorEscoresClasses(lin) * (matrizesConf{i}(lin,col)/frac));
                 else %erros
-                    somaEscoresErrosClasse(lin) = somaEscoresErrosClasse(lin) + (matrizesConf{i}(lin,col)*matrizErrosClasse(lin,col));
+                    somaEscoresErrosClasse(lin) = somaEscoresErrosClasse(lin) + (matrizesConf{i}(lin,col)*(matrizErrosClasse(lin,col)/frac));
                 end
             end
             %matriz 3d - rodada:classe:resolução
@@ -126,9 +139,9 @@ for reso = resolucoes
         fprintf(fileID,'#SOMA DOS ESCORES DE ACERTOS E ERROS#\n');
         fprintf(fileID,'%2s %10s %10s\r\n','CLASSE','ACERTO','ERRO');
         for k = 1 : qtdClasses
-            fprintf(fileID,'%3d %11d %11d\r\n',k,somaEscoresAcertosClasse(k),somaEscoresErrosClasse(k));
+            fprintf(fileID,'%3d %11.1f %11.1f\r\n',k,somaEscoresAcertosClasse(k),somaEscoresErrosClasse(k));
         end
-        fprintf(fileID,'\n%2s %9d %11d\r\n','TOTAL',sum(somaEscoresAcertosResoGeral(:,i,pos)),sum(somaEscoresErrosResoGeral(:,i,pos)));
+        fprintf(fileID,'\n%2s %9.1f %11.1f\r\n','TOTAL',sum(somaEscoresAcertosResoGeral(:,i,pos)),sum(somaEscoresErrosResoGeral(:,i,pos)));
         
         fprintf(fileID,'\n');
         
@@ -157,6 +170,14 @@ for reso = resolucoes
 
     fprintf(fileID,'################GERAL################\n\n', i);
     fprintf(fileID,'RESULTADO GERAL DAS MÉTRICAS POR CLASSE : GLCM %d%%\n\n',reso);
+    
+    %escrevendo a matriz de confusao
+    fprintf(fileID,'MATRIZ DE CONFUSÃO: GLCM %d%%\n\n',reso);
+    fprintf(fileID,'%3.1f %3.1f %3.1f %3.1f %3.1f %3.1f %3.1f\r\n',(matrixConfusion')/numRodadas);
+    fprintf(fileID,'\n');
+        
+    matrixConfusion = zeros(qtdClasses);    
+        
     fprintf(fileID,'%2s %10s %10s\r\n','CLASSE','ACC_PC','STD');
     
     
@@ -277,7 +298,7 @@ for k = 1 : qtdClasses
     hold off
     strTitle = sprintf('Acurácia da Classe %d por Resolução - %d rodadas',k,numRodadas);
     title(strTitle);
-    xlabel('Resoluções da Imagem Original');
+    xlabel('Redimensionamento %');
     ylabel('Acurácia');
     
     nameFileGraph = sprintf('graphics/classes_x_resolucao/C%d_Rods%d.png',k,numRodadas);
@@ -323,7 +344,7 @@ plot(mean(c), 'og');
 hold off
 strTitle = sprintf('Escores de Acertos do Classificador - %d rodadas',numRodadas);
 title(strTitle);
-xlabel('Resoluções da Imagem Original');
+xlabel('Redimensionamento %');
 ylabel('Valor Total de Acertos do Classificador');
 
 nameFileGraph = sprintf('graphics/escores_x_classificador/BoxPlot_Acertos_Rods%d.png',numRodadas);
@@ -334,21 +355,39 @@ gcf = figure('visible','off');
 
 %armazena o valor total de erros do classificador em cada realização
 %ou rodada
-b = sum(somaEscoresErrosResoGeral(:,:,resoIni:resoFim));
+b2 = sum(somaEscoresErrosResoGeral(:,:,resoIni:resoFim));
 %reduz a dimensão da matrix de 3D para 2D para ser plotada no box plot
-c = squeeze(b);
+c2 = squeeze(b2);
 
-boxplot(c);
+boxplot(c2);
 % Overlay the mean as green circle
 hold on
-plot(mean(c), 'og');
+plot(mean(c2), 'og');
 hold off
 strTitle = sprintf('Escores de Erros do Classificador - %d rodadas',numRodadas);
 title(strTitle);
-xlabel('Resoluções da Imagem Original');
+xlabel('Redimensionamento %');
 ylabel('Valor Total de Erros do Classificador');
 
 nameFileGraph = sprintf('graphics/escores_x_classificador/BoxPlot_Erros_Rods%d.png',numRodadas);
+saveas(gcf,nameFileGraph);
+
+%boxplot dos somatórios dos valores do classificador
+gcf = figure('visible','off');
+
+d = c-c2;
+
+boxplot(d);
+% Overlay the mean as green circle
+hold on
+plot(mean(d), 'og');
+hold off
+strTitle = sprintf('Valor do Classificador - %d rodadas',numRodadas);
+title(strTitle);
+xlabel('Redimensionamento %');
+ylabel('Valor Total do Classificador');
+
+nameFileGraph = sprintf('graphics/escores_x_classificador/BoxPlot_Valor_Rods%d.png',numRodadas);
 saveas(gcf,nameFileGraph);
 
 %LINE PLOT DO CLASSIFICADOR
@@ -372,18 +411,22 @@ y1 = 100*mean(vetorAccClasseReso(:,resoIni:resoFim)); %acurácia do classificador
 y2 = mean(c); %média do escores de acertos em todas as rodadas do classificador
 y3 = mean(c2); %média do escores de acertos em todas as rodadas do classificador
 
-%pegando as 5 maiores acurácia baseado na classe 1
+%pegando as 5 melhores acurácia
 mediaAccClasses = squeeze(mean(matrixAccClasseRodReso(:,:,resoIni:resoFim)));%pega a média das acuracias das clases
-mediaAccClassesOrder = sortrows(mediaAccClasses,-1*[resoIni:resoFim]);%ordena na forma decrescente da esquerda para a direita
-y4 = 100*mean(mediaAccClassesOrder(1:maiores,:));% pegar as n maiores maiores acurácias do classificador
+mediaAccClassesOrder =  sort(mediaAccClasses,'descend');%ordena as colunas na forma decrescente
+y4 = 100*mean(mediaAccClassesOrder(1:melhores,:));% pegar as n melhores melhores acurácias do classificador
 
-%pegando os 5 maiores acertos baseado na classe 1
-mediaAcertosOrder = sortrows(c,-1*[resoIni:resoFim]);%ordena na forma decrescente da esquerda para a direita
-y5 = mean(mediaAcertosOrder(1:maiores,:));% pegar os n maiores acertos do classificador
+%pegando os 5 melhores acertos
+mediaAcertosOrder = sort(c,'descend');%ordena as colunas na forma decrescente
+y5 = mean(mediaAcertosOrder(1:melhores,:));% pegar os n melhores acertos do classificador
 
-%pegando os 5 maiores erros baseado na classe 1
-mediaErrosOrder = sortrows(c2,-1*[resoIni:resoFim]);%ordena na forma decrescente da esquerda para a direita
-y6 = mean(mediaErrosOrder(1:maiores,:));% pegar os n maiores acertos do classificador
+%pegando os 5 menores erros
+mediaErrosOrder = sort(c2);%ordena as colunas na forma crescente
+y6 = mean(mediaErrosOrder(1:melhores,:));% pegar os n menores erros do classificador
+
+%pegando os valor do classificador
+valor_class = c-c2;
+y7 = mean(valor_class);
 
 plot(x,y1,'b','LineWidth',2,'DisplayName','Acurácia');
 hold on
@@ -391,17 +434,19 @@ plot(x,y2,'g','LineWidth',2,'DisplayName','Acertos');
 hold on
 plot(x,y3,'r','LineWidth',2,'DisplayName','Erros');
 hold on
-plot(x,y4,'k','LineWidth',2,'DisplayName','Acurácia+');
+% plot(x,y4,'k','LineWidth',2,'DisplayName','Acurácia+');
+% hold on
+% plot(x,y5,'c','LineWidth',2,'DisplayName','Acertos+');
+% hold on
+% plot(x,y6,'m','LineWidth',2,'DisplayName','Erros+');
+plot(x,y7,'k','LineWidth',2,'DisplayName','Valor Classificador');
 hold on
-plot(x,y5,'c','LineWidth',2,'DisplayName','Acertos+');
-hold on
-plot(x,y6,'m','LineWidth',2,'DisplayName','Erros+');
 
 legend('show','Location','northwest','Orientation','horizontal');
 hold off
 strTitle = sprintf('Acurácia, Escores de Acertos e Erros do Classificador - %d rodadas',numRodadas);
 title(strTitle);
-xlabel('Resoluções da Imagem Original');
+xlabel('Redimensionamento %');
 ylabel('Média do Total de Acertos do Classificador');
 
 nameFileGraph = sprintf('graphics/escores_x_classificador/Line_Acurácia_Acertos_Erros_Rods%d.png',numRodadas);
@@ -410,7 +455,7 @@ saveas(gcf,nameFileGraph);
 
 
 %ESCREVENDO NO ARQUIVO O RESULTADO (ACUÁRIA E DESVIO PADRÃO) GERAL DAS CLASSES EM CADA RESOLUÇÃO
-% fprintf(fileID2,'\nEXIBINDO OS 5 maiores CLASSIFICADORES COM BASE NO TOTAL DE ESCORES DE ACERTOS');
+% fprintf(fileID2,'\nEXIBINDO OS 5 melhores CLASSIFICADORES COM BASE NO TOTAL DE ESCORES DE ACERTOS');
 % fprintf(fileID2,'\n%2s %10s %10s %10s %10s\r\n','ESCORES','ERROS','ACURÁCIA','RODADA','RESOLUÇÃO');
 % %[sortC, sortIndices] = sort(c,2,'descend');%ordena a matrix linhas
 % maxValue = max(c(:));
